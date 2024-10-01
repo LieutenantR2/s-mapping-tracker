@@ -1,0 +1,122 @@
+.map {
+  background-size: contain;
+  flex-grow: 1;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.map.azys-lla {
+  background-image: url('azys-lla.jpg?1727753895');
+}
+
+.map.central-shroud {
+  background-image: url('central-shroud.jpg?1727753895');
+}
+
+.map.central-thanalan {
+  background-image: url('central-thanalan.jpg?1727753895');
+}
+
+.map.coerthas-central-highlands {
+  background-image: url('coerthas-central-highlands.jpg?1727753895');
+}
+
+.map.coerthas-western-highlands {
+  background-image: url('coerthas-western-highlands.jpg?1727753895');
+}
+
+.map.east-shroud {
+  background-image: url('east-shroud.jpg?1727753895');
+}
+
+.map.eastern-la-noscea {
+  background-image: url('eastern-la-noscea.jpg?1727753895');
+}
+
+.map.eastern-thanalan {
+  background-image: url('eastern-thanalan.jpg?1727753895');
+}
+
+.map.lower-la-noscea {
+  background-image: url('lower-la-noscea.jpg?1727753895');
+}
+
+.map.middle-la-noscea {
+  background-image: url('middle-la-noscea.jpg?1727753895');
+}
+
+.map.mor-dhona {
+  background-image: url('mor-dhona.jpg?1727753895');
+}
+
+.map.north-shroud {
+  background-image: url('north-shroud.jpg?1727753895');
+}
+
+.map.northern-thanalan {
+  background-image: url('northern-thanalan.jpg?1727753895');
+}
+
+.map.outer-la-noscea {
+  background-image: url('outer-la-noscea.jpg?1727753895');
+}
+
+.map.south-shroud {
+  background-image: url('south-shroud.jpg?1727753895');
+}
+
+.map.southern-thanalan {
+  background-image: url('southern-thanalan.jpg?1727753895');
+}
+
+.map.the-azim-steppe {
+  background-image: url('the-azim-steppe.jpg?1727753895');
+}
+
+.map.the-churning-mists {
+  background-image: url('the-churning-mists.jpg?1727753895');
+}
+
+.map.the-dravanian-forelands {
+  background-image: url('the-dravanian-forelands.jpg?1727753895');
+}
+
+.map.the-dravanian-hinterlands {
+  background-image: url('the-dravanian-hinterlands.jpg?1727753895');
+}
+
+.map.the-fringes {
+  background-image: url('the-fringes.jpg?1727753895');
+}
+
+.map.the-lochs {
+  background-image: url('the-lochs.jpg?1727753895');
+}
+
+.map.the-peaks {
+  background-image: url('the-peaks.jpg?1727753895');
+}
+
+.map.the-ruby-sea {
+  background-image: url('the-ruby-sea.jpg?1727753895');
+}
+
+.map.the-sea-of-clouds {
+  background-image: url('the-sea-of-clouds.jpg?1727753895');
+}
+
+.map.upper-la-noscea {
+  background-image: url('upper-la-noscea.jpg?1727753895');
+}
+
+.map.western-la-noscea {
+  background-image: url('western-la-noscea.jpg?1727753895');
+}
+
+.map.western-thanalan {
+  background-image: url('western-thanalan.jpg?1727753895');
+}
+
+.map.yanxia {
+  background-image: url('yanxia.jpg?1727753895');
+}
