@@ -25,8 +25,8 @@ const Styles = css({
 
     '& .spawn-point': {
       color: 'rgb(222, 226, 230)',
+      fontWeight: 'bold',
       position: 'absolute',
-      backgroundColor: 'rgba(9, 81, 210, 0.9)',
       textAlign: 'center',
       userSelect: 'none',
       borderRadius: '50%',
@@ -38,8 +38,28 @@ const Styles = css({
       boxShadow: '2px 2px .25rem #343a40,inset -1px -1px 2px rgba(52, 58, 64, 0.5)',
       textShadow: '1px 1px 1px rgba(0, 0, 0, 0.85), 0 0 1px #000',
 
-      '&.has-data': {
-        backgroundColor: 'rgba(0, 177, 0, 0.9)',
+      '&.type-0': {
+        backgroundColor: 'rgba(9, 81, 210, 0.9)',
+
+        '&.has-data': {
+          backgroundColor: 'rgba(0,101,0,0.9)',
+        },
+      },
+
+      '&.type-1': {
+        backgroundColor: 'rgba(140, 81, 210, 0.9)',
+
+        '&.has-data': {
+          backgroundColor: 'rgba(0,182,0,0.9)',
+        },
+      },
+
+      '&.type-2': {
+        backgroundColor: 'rgba(30,176,212,0.9)',
+
+        '&.has-data': {
+          backgroundColor: 'rgba(78,169,112,0.9)',
+        },
       },
 
       '&:hover': {
@@ -80,7 +100,7 @@ function App() {
     }
     const imgLength = Math.min(width, height);
     const [xImgOffset, yImgOffset] = selectedRegion.croppedBounds[0];
-    const ratio = imgLength / selectedRegion.ratio;
+    const ratio = imgLength / selectedRegion.scale;
     setXOffset((width <= imgLength ? 0 : width - imgLength) / 2.0 - ratio * xImgOffset);
     setYOffset((height <= imgLength ? 0 : height - imgLength) / 2.0 - ratio * yImgOffset);
     setRatio(ratio);
@@ -106,7 +126,10 @@ function App() {
             ...(counter[selectedRegion.id] ?? {}),
             [name]: {
               ...(counter[selectedRegion.id]?.[name] ?? {}),
-              [`${x},${y}`]: (counter[selectedRegion.id]?.[name]?.[`${x},${y}`] ?? 0) - 1,
+              [`${x},${y}`]: Math.max(
+                0,
+                (counter[selectedRegion.id]?.[name]?.[`${x},${y}`] ?? 0) - 1
+              ),
             },
           },
         });
@@ -128,13 +151,14 @@ function App() {
       </div>
       {selectedRegion ? (
         <div ref={mapRef} className={clsx({ map: true, [`${selectedRegion.id}`]: true })}>
-          {Object.keys(points).map((name: string) => {
+          {Object.keys(points).map((name: string, type) => {
             return points[name].map(([x, y], i) => (
               <React.Fragment key={i}>
                 <span
                   className={clsx({
                     'spawn-point': true,
                     'has-data': !!counter[selectedRegion.id]?.[name]?.[`${x},${y}`],
+                    [`type-${type}`]: true,
                   })}
                   style={{
                     left: x * ratio + xOffset,

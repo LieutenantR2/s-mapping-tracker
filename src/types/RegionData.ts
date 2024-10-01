@@ -3,6 +3,6 @@ export type RegionData = {
   name: string;
   patch: number;
   croppedBounds: [[number, number], [number, number]];
-  ratio: number;
+  scale: number;
   spawns: Record<string, [number, number][]>;
 };
