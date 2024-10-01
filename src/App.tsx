@@ -7,6 +7,7 @@ import { RegionData } from './types/RegionData';
 import clsx from 'clsx';
 import LOCATION_DATA from './data/Map.ts';
 import React from 'react';
+import PATCHES from './data/Patch.ts';
 
 const Styles = css({
   flexGrow: 1,
@@ -14,14 +15,65 @@ const Styles = css({
   justifyContent: 'stretch',
   flexDirection: 'row',
 
-  '& .sidebar': {
+  '.copyright': {
     flexGrow: 0,
-    width: '250px',
+    borderTop: '1px solid rgba(255, 255, 255, 0.5)',
+    padding: '6px',
+    backgroundColor: '#444',
+    fontSize: '0.7rem',
+    textAlign: 'center',
   },
 
-  '& .map': {
+  '.sidebar': {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 0,
+    width: '300px',
+    height: '100%',
+
+    '& .status': {
+      backgroundColor: 'red',
+    },
+
+    '& .locations-list': {
+      display: 'flex',
+      flexDirection: 'column',
+      flexGrow: 1,
+      overflowY: 'scroll',
+      padding: '32px 0',
+
+      '& .patch-heading': {
+        padding: '8px 6px',
+        fontWeight: 'bold',
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.5)',
+      },
+
+      '& .location-option': {
+        cursor: 'pointer',
+        padding: '8px',
+
+        '&:hover': {
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        },
+
+        '&.active': {
+          backgroundColor: 'rgba(70, 90, 0, 0.6)',
+        },
+      },
+    },
+  },
+
+  '.no-map-text': {
+    textAlign: 'center',
+  },
+
+  '.map': {
     position: 'relative',
     flexGrow: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
 
     '& .spawn-point': {
       color: 'rgb(222, 226, 230)',
@@ -42,7 +94,7 @@ const Styles = css({
         backgroundColor: 'rgba(9, 81, 210, 0.9)',
 
         '&.has-data': {
-          backgroundColor: 'rgba(0,101,0,0.9)',
+          backgroundColor: 'rgba(0,182,0,0.9)',
         },
       },
 
@@ -50,7 +102,7 @@ const Styles = css({
         backgroundColor: 'rgba(140, 81, 210, 0.9)',
 
         '&.has-data': {
-          backgroundColor: 'rgba(0,182,0,0.9)',
+          backgroundColor: 'rgba(0,101,0,0.9)',
         },
       },
 
@@ -82,7 +134,7 @@ function App() {
   const [counter, setCounter] = useState<Record<string, Record<string, Record<string, number>>>>(
     {}
   );
-  const [selectedRegion, setSelectedRegion] = useState<RegionData>(LOCATION_DATA[0]);
+  const [selectedRegion, setSelectedRegion] = useState<RegionData | undefined>();
   const [points, setPoints] = useState<Record<string, [number, number][]>>({});
 
   useEffect(() => {
@@ -108,6 +160,11 @@ function App() {
 
   const handleSpawnClick = useCallback(
     (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, name: string, [x, y]: [number, number]) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!selectedRegion) {
+        return;
+      }
       if (e.nativeEvent.button === 0) {
         setCounter({
           ...counter,
@@ -134,8 +191,6 @@ function App() {
           },
         });
       }
-      e.preventDefault();
-      e.stopPropagation();
     },
     [counter, selectedRegion]
   );
@@ -143,15 +198,39 @@ function App() {
   return (
     <div css={Styles}>
       <div className="sidebar">
-        {LOCATION_DATA.map((location, i) => (
-          <div className="location-option" key={i} onClick={() => setSelectedRegion(location)}>
-            {location.name}
-          </div>
-        ))}
+        <div className="status"></div>
+        <div className="locations-list">
+          {PATCHES.map((patch) => {
+            return (
+              <React.Fragment key={patch.name}>
+                <div className="patch-heading">{patch.name}</div>
+                {LOCATION_DATA.filter((l) => l.patch === patch.patch).map((location, i) => (
+                  <div
+                    className={clsx({
+                      'location-option': true,
+                      active: selectedRegion?.id === location.id,
+                    })}
+                    key={i}
+                    onClick={() => setSelectedRegion(location)}
+                  >
+                    {location.name}
+                  </div>
+                ))}
+              </React.Fragment>
+            );
+          })}
+        </div>
+        <span className="copyright">
+          FINAL FANTASY is a registered trademark of Square Enix Holdings Co., Ltd. &copy; SQUARE
+          ENIX
+        </span>
       </div>
-      {selectedRegion ? (
-        <div ref={mapRef} className={clsx({ map: true, [`${selectedRegion.id}`]: true })}>
-          {Object.keys(points).map((name: string, type) => {
+      <div
+        ref={mapRef}
+        className={clsx({ map: true, [`${selectedRegion?.id ?? 'not-selected'}`]: true })}
+      >
+        {selectedRegion ? (
+          Object.keys(points).map((name: string, type) => {
             return points[name].map(([x, y], i) => (
               <React.Fragment key={i}>
                 <span
@@ -171,11 +250,11 @@ function App() {
                 </span>
               </React.Fragment>
             ));
-          })}
-        </div>
-      ) : (
-        <div>Select a region to start</div>
-      )}
+          })
+        ) : (
+          <div className="no-map-text">Select a region to start</div>
+        )}
+      </div>
     </div>
   );
 }
