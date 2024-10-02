@@ -9,6 +9,9 @@ import LOCATION_DATA from './data/Map.ts';
 import React from 'react';
 import PATCHES from './data/Patch.ts';
 import ExpectedKills from './constants/ExpectedKills.ts';
+import { LogData } from './types/LogData.ts';
+import { compressedExport, findLastIndex } from './utils.ts';
+import { Base64 } from 'js-base64';
 
 const Styles = css({
   flexGrow: 1,
@@ -264,6 +267,15 @@ const App = () => {
   );
   const [selectedRegion, setSelectedRegion] = useState<RegionData | undefined>();
   const [points, setPoints] = useState<Record<string, [number, number][]>>({});
+  const [spawnLog, setSpawnLog] = useState<Record<string, LogData[]>>({});
+
+  useEffect(() => {
+    if (selectedRegion) {
+      const compressedLog = compressedExport(spawnLog[selectedRegion.id] ?? [], selectedRegion);
+      const base64 = Base64.toBase64(JSON.stringify(compressedLog), true);
+      console.log(base64);
+    }
+  }, [selectedRegion, spawnLog]);
 
   useEffect(() => {
     if (selectedRegion) {
@@ -312,6 +324,13 @@ const App = () => {
             },
           },
         });
+        setSpawnLog({
+          ...spawnLog,
+          [selectedRegion.id]: [
+            ...(spawnLog[selectedRegion.id] ?? []),
+            { ts: new Date().getTime(), pos: `${x},${y}` },
+          ],
+        });
       } else if (e.nativeEvent.button === 2) {
         setCounter({
           ...counter,
@@ -326,9 +345,18 @@ const App = () => {
             },
           },
         });
+        const prevSpawnLog = [...(spawnLog[selectedRegion.id] ?? [])];
+        const prevToRemove = findLastIndex(prevSpawnLog, (item) => item.pos === `${x},${y}`);
+        if (prevToRemove > -1) {
+          prevSpawnLog.splice(prevToRemove, 1);
+          setSpawnLog({
+            ...spawnLog,
+            [selectedRegion.id]: prevSpawnLog,
+          });
+        }
       }
     },
-    [counter, selectedRegion]
+    [spawnLog, counter, selectedRegion]
   );
 
   const clearCount = useCallback(() => {
@@ -337,8 +365,12 @@ const App = () => {
         ...counter,
         [selectedRegion.id]: {},
       });
+      setLocationACounts({
+        ...locationACounts,
+        [selectedRegion.id]: {},
+      });
     }
-  }, [selectedRegion, counter]);
+  }, [locationACounts, selectedRegion, counter]);
 
   const handleACount = useCallback(
     (bRankName: string, pos: number) => {
@@ -377,14 +409,13 @@ const App = () => {
                     {bRank !== 'A Ranks' &&
                       ExpectedKills[
                         (selectedRegion.spawns[bRank]?.length ?? 0) -
-                          (selectedRegion.patch > 2
-                            ? (locationACounts[selectedRegion.id]?.[bRank] ?? 0)
-                            : 1)
+                          (locationACounts[selectedRegion.id]?.[bRank] ?? 0) -
+                          (selectedRegion.patch > 2 ? 0 : 1)
                       ]}
                   </span>
                   <span className="status-type-count">{locationBCounts[bRank]}</span>
                 </div>
-                {selectedRegion.patch > 2 && bRank !== 'A Ranks' && (
+                {bRank !== 'A Ranks' && (
                   <div className={`status-a-rank status-type-${i}`}>
                     A Ranks:
                     <span
@@ -405,6 +436,7 @@ const App = () => {
                         'status-a-rank-button': true,
                         active: (locationACounts[selectedRegion.id]?.[bRank] ?? 0) >= 2,
                         disabled:
+                          selectedRegion.patch < 3 ||
                           (locationACounts[selectedRegion.id]?.[bRank] ?? 0) < 1 ||
                           ((locationACounts[selectedRegion.id]?.[bRank] ?? 0) < 2 &&
                             Object.values(locationACounts[selectedRegion.id] ?? {}).reduce(
