@@ -137,6 +137,7 @@ const Styles = css({
       '& .location-option': {
         cursor: 'pointer',
         padding: '8px',
+        userSelect: 'none',
 
         '&:hover': {
           backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -168,6 +169,7 @@ const Styles = css({
       right: 0,
       padding: '4px 8px',
       backgroundColor: 'rgba(255, 19, 14, 0.8)',
+      userSelect: 'none',
 
       '&:hover': {
         backgroundColor: 'rgba(200, 19, 14, 0.8)',
@@ -251,7 +253,9 @@ const App = () => {
   const [yOffset, setYOffset] = useState(0);
   const [ratio, setRatio] = useState(1);
 
-  const [locationACounts, setLocationACounts] = useState<Record<string, number>>({});
+  const [locationACounts, setLocationACounts] = useState<Record<string, Record<string, number>>>(
+    {}
+  );
   const [locationBCounts, setLocationBCounts] = useState<Record<string, number> | undefined>(
     undefined
   );
@@ -338,8 +342,12 @@ const App = () => {
 
   const handleACount = useCallback(
     (bRankName: string, pos: number) => {
-      const prevCount = locationACounts[bRankName] ?? 0;
-      let nextCount = prevCount;
+      if (!selectedRegion) {
+        return;
+      }
+
+      const prevCount = locationACounts[selectedRegion.id]?.[bRankName] ?? 0;
+      let nextCount: number;
       if (prevCount >= 2 || prevCount == 0) {
         nextCount = 1;
       } else {
@@ -347,10 +355,13 @@ const App = () => {
       }
       setLocationACounts({
         ...locationACounts,
-        [bRankName]: nextCount,
+        [selectedRegion.id]: {
+          ...locationACounts[selectedRegion.id],
+          [bRankName]: nextCount,
+        },
       });
     },
-    [locationACounts]
+    [selectedRegion, locationACounts]
   );
 
   return (
@@ -366,7 +377,9 @@ const App = () => {
                     {bRank !== 'A Ranks' &&
                       ExpectedKills[
                         (selectedRegion.spawns[bRank]?.length ?? 0) -
-                          (selectedRegion.patch > 2 ? (locationACounts[bRank] ?? 0) : 1)
+                          (selectedRegion.patch > 2
+                            ? (locationACounts[selectedRegion.id]?.[bRank] ?? 0)
+                            : 1)
                       ]}
                   </span>
                   <span className="status-type-count">{locationBCounts[bRank]}</span>
@@ -377,21 +390,27 @@ const App = () => {
                     <span
                       className={clsx({
                         'status-a-rank-button': true,
-                        active: (locationACounts[bRank] ?? 0) >= 1,
+                        active: (locationACounts[selectedRegion.id]?.[bRank] ?? 0) >= 1,
                         disabled:
-                          (locationACounts[bRank] ?? 0) < 1 &&
-                          Object.values(locationACounts).reduce((a, b) => a + b, 0) >= 2,
+                          (locationACounts[selectedRegion.id]?.[bRank] ?? 0) < 1 &&
+                          Object.values(locationACounts[selectedRegion.id] ?? {}).reduce(
+                            (a, b) => a + b,
+                            0
+                          ) >= 2,
                       })}
                       onClick={() => handleACount(bRank, 1)}
                     />
                     <span
                       className={clsx({
                         'status-a-rank-button': true,
-                        active: (locationACounts[bRank] ?? 0) >= 2,
+                        active: (locationACounts[selectedRegion.id]?.[bRank] ?? 0) >= 2,
                         disabled:
-                          (locationACounts[bRank] ?? 0) < 1 ||
-                          ((locationACounts[bRank] ?? 0) < 2 &&
-                            Object.values(locationACounts).reduce((a, b) => a + b, 0) >= 2),
+                          (locationACounts[selectedRegion.id]?.[bRank] ?? 0) < 1 ||
+                          ((locationACounts[selectedRegion.id]?.[bRank] ?? 0) < 2 &&
+                            Object.values(locationACounts[selectedRegion.id] ?? {}).reduce(
+                              (a, b) => a + b,
+                              0
+                            ) >= 2),
                       })}
                       onClick={() => handleACount(bRank, 2)}
                     />
