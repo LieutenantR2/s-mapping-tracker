@@ -447,7 +447,7 @@ const App = () => {
               <React.Fragment key={bRank}>
                 <div className={`status-type status-type-${i}`}>
                   <span className="status-type-name">{bRank}</span>{' '}
-                  <span className="status-type-expected">
+                  <span className="status-type-expected" title="Expected number of kills">
                     {bRank !== 'A Ranks' &&
                       ExpectedKills[
                         (selectedRegion.spawns[bRank]?.length ?? 0) -
@@ -455,7 +455,9 @@ const App = () => {
                           (selectedRegion.patch > 2 ? 0 : 1)
                       ]}
                   </span>
-                  <span className="status-type-count">{locationBCounts[bRank]}</span>
+                  <span className="status-type-count" title="Current total kills">
+                    {locationBCounts[bRank]}
+                  </span>
                 </div>
                 {bRank !== 'A Ranks' && (
                   <div className={`status-a-rank status-type-${i}`}>
@@ -472,6 +474,7 @@ const App = () => {
                           ) >= 2,
                       })}
                       onClick={() => handleACount(bRank, 1)}
+                      title="Select this if an A rank is alive on a spawn point"
                     />
                     <span
                       className={clsx({
@@ -487,6 +490,7 @@ const App = () => {
                             ) >= 2),
                       })}
                       onClick={() => handleACount(bRank, 2)}
+                      title="Select this if an A rank is alive on a spawn point"
                     />
                   </div>
                 )}
@@ -550,7 +554,7 @@ const App = () => {
             <div className="clear-button" onClick={clearCount}>
               Clear
             </div>
-            <div className="analytics-button" onClick={handleAnalytics}>
+            <div className="analytics-button" onClick={handleAnalytics} title="View Analytics">
               <QueryStatsIcon fontSize="large" />
             </div>
             {selectedRegion && analyticsOpen && (
