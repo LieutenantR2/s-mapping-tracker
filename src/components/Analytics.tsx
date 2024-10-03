@@ -10,13 +10,26 @@ import {
 } from 'recharts';
 import { LogData } from '../types/LogData.ts';
 import { RegionData } from '../types/RegionData.ts';
+import { useMemo } from 'react';
 
 const colourOrder: string[] = ['rgb(19, 101, 230)', 'rgb(140, 81, 210)', 'rgb(30, 176, 212)'];
+const simLineColour = 'rgba(255, 255, 100, 0.4)';
 
 type AnalyticsProps = {
   data: LogData[];
   location: RegionData;
 };
+
+function simulate(spawnCount: number) {
+  const unique = new Set<number>();
+  const simResult: number[] = [];
+  while (unique.size < spawnCount - 1) {
+    const spot = Math.floor(Math.random() * spawnCount);
+    unique.add(spot);
+    simResult.push(spot);
+  }
+  return simResult;
+}
 
 function transformData(data: Record<string, number[]>) {
   const series: Record<string, number>[] = [];
@@ -39,6 +52,8 @@ function transformData(data: Record<string, number[]>) {
 }
 
 const Analytics = ({ data, location }: AnalyticsProps) => {
+  const maximumSpawnCount = Math.max(...Object.values(location.spawns).map((s) => s.length));
+  const simulated = useMemo<number[]>(() => simulate(maximumSpawnCount), [maximumSpawnCount]);
   const spawnLookUp = Object.keys(location.spawns).reduce(
     (result, bRank) => {
       result = {
@@ -68,16 +83,11 @@ const Analytics = ({ data, location }: AnalyticsProps) => {
   return (
     <ResponsiveContainer width="100%" height="80%">
       <LineChart
-        data={transformData(bRankSeries)}
+        data={transformData({ ...bRankSeries, Simulated: simulated })}
         margin={{ top: 0, right: 30, left: 20, bottom: 30 }}
       >
         <CartesianGrid strokeDasharray="3 3" stroke="white" />
-        <XAxis
-          dataKey="unique"
-          type="number"
-          domain={[0, Math.max(...Object.values(location.spawns).map((s) => s.length))]}
-          stroke="white"
-        >
+        <XAxis dataKey="unique" type="number" domain={[0, maximumSpawnCount]} stroke="white">
           <Label value="Unique Spawn Points" offset={0} position="bottom" />
         </XAxis>
         <YAxis
@@ -88,8 +98,21 @@ const Analytics = ({ data, location }: AnalyticsProps) => {
         />
         <Legend verticalAlign="top" iconSize={24} height={50} />
         {Object.keys(location.spawns).map((bRank, i) => (
-          <Line type="monotone" dataKey={bRank} stroke={colourOrder[i]} strokeWidth={5} />
+          <Line
+            key={bRank}
+            type="monotone"
+            dataKey={bRank}
+            stroke={colourOrder[i]}
+            strokeWidth={5}
+          />
         ))}
+        <Line
+          type="monotone"
+          dataKey="Simulated"
+          stroke={simLineColour}
+          strokeWidth={2}
+          dot={false}
+        />
       </LineChart>
     </ResponsiveContainer>
   );
