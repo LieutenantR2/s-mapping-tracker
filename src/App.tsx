@@ -13,6 +13,9 @@ import { LogData } from './types/LogData.ts';
 import { compressedExport, findLastIndex } from './utils.ts';
 import { Base64 } from 'js-base64';
 
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import Analytics from './components/Analytics.tsx';
+
 const Styles = css({
   flexGrow: 1,
   display: 'flex',
@@ -100,26 +103,26 @@ const Styles = css({
       },
 
       '& .status-type-0': {
-        backgroundColor: 'rgba(9, 81, 210, 1)',
+        backgroundColor: 'rgb(9, 81, 210)',
 
         '& .status-type-count': {
-          backgroundColor: 'rgba(0, 182, 0, 1)',
+          backgroundColor: 'rgb(0, 182, 0)',
         },
       },
 
       '& .status-type-1': {
-        backgroundColor: 'rgba(140, 81, 210, 1)',
+        backgroundColor: 'rgb(140, 81, 210)',
 
         '& .status-type-count': {
-          backgroundColor: 'rgba(65, 134, 92, 1)',
+          backgroundColor: 'rgb(65, 134, 92)',
         },
       },
 
       '& .status-type-2': {
-        backgroundColor: 'rgba(30, 176, 212, 1)',
+        backgroundColor: 'rgb(30, 176, 212)',
 
         '& .status-type-count': {
-          backgroundColor: 'rgba(0, 101, 0, 1)',
+          backgroundColor: 'rgb(0, 101, 0)',
         },
       },
     },
@@ -166,6 +169,7 @@ const Styles = css({
 
     '& .clear-button': {
       fontSize: '1rem',
+      fontWeight: 'bold',
       cursor: 'pointer',
       position: 'absolute',
       top: 0,
@@ -177,6 +181,35 @@ const Styles = css({
       '&:hover': {
         backgroundColor: 'rgba(200, 19, 14, 0.8)',
       },
+    },
+
+    '& .analytics-button': {
+      zIndex: 100,
+      cursor: 'pointer',
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      padding: '4px 8px',
+      backgroundColor: 'rgb(120, 60, 60)',
+
+      '&:hover': {
+        backgroundColor: 'rgb(60, 100, 100)',
+      },
+    },
+
+    '& .analytics-modal': {
+      fontSize: '1.1rem',
+      fontWeight: 'bold',
+      position: 'absolute',
+      display: 'flex',
+      alignItems: 'center',
+      height: '40%',
+      maxHeight: '300px',
+      bottom: 0,
+      right: 0,
+      left: 0,
+      backgroundColor: 'rgba(33, 33, 33, 0.9)',
+      paddingRight: '52px',
     },
 
     '& .spawn-point': {
@@ -268,6 +301,7 @@ const App = () => {
   const [selectedRegion, setSelectedRegion] = useState<RegionData | undefined>();
   const [points, setPoints] = useState<Record<string, [number, number][]>>({});
   const [spawnLog, setSpawnLog] = useState<Record<string, LogData[]>>({});
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
 
   useEffect(() => {
     if (selectedRegion) {
@@ -369,6 +403,10 @@ const App = () => {
         ...locationACounts,
         [selectedRegion.id]: {},
       });
+      setSpawnLog({
+        ...spawnLog,
+        [selectedRegion.id]: [],
+      });
     }
   }, [locationACounts, selectedRegion, counter]);
 
@@ -395,6 +433,10 @@ const App = () => {
     },
     [selectedRegion, locationACounts]
   );
+
+  const handleAnalytics = useCallback(() => {
+    setAnalyticsOpen(!analyticsOpen);
+  }, [analyticsOpen]);
 
   return (
     <div css={Styles}>
@@ -508,6 +550,14 @@ const App = () => {
             <div className="clear-button" onClick={clearCount}>
               Clear
             </div>
+            <div className="analytics-button" onClick={handleAnalytics}>
+              <QueryStatsIcon fontSize="large" />
+            </div>
+            {selectedRegion && analyticsOpen && (
+              <div className="analytics-modal">
+                <Analytics data={spawnLog[selectedRegion.id] ?? []} location={selectedRegion} />
+              </div>
+            )}
           </>
         ) : (
           <div className="no-map-text">Select a region to start</div>
