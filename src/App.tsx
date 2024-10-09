@@ -559,7 +559,11 @@ const App = () => {
             </div>
             {selectedRegion && analyticsOpen && (
               <div className="analytics-modal">
-                <Analytics data={spawnLog[selectedRegion.id] ?? []} location={selectedRegion} />
+                <Analytics
+                  data={spawnLog[selectedRegion.id] ?? []}
+                  location={selectedRegion}
+                  locationACounts={locationACounts[selectedRegion.id] ?? {}}
+                />
               </div>
             )}
           </>
