@@ -5,6 +5,10 @@
   background-position: center;
 }
 
+.map.amh-araeng {
+  background-image: url('amh-araeng.jpg?1727753895');
+}
+
 .map.azys-lla {
   background-image: url('azys-lla.jpg?1727753895');
 }
@@ -37,8 +41,48 @@
   background-image: url('eastern-thanalan.jpg?1727753895');
 }
 
+.map.elpis {
+  background-image: url('elpis.jpg?1727753895');
+}
+
+.map.garlemald {
+  background-image: url('garlemald.jpg?1727753895');
+}
+
+.map.heritage-found {
+  background-image: url('heritage-found.jpg?1727753895');
+}
+
+.map.il-mheg {
+  background-image: url('il-mheg.jpg?1727753895');
+}
+
+.map.kholusia {
+  background-image: url('kholusia.jpg?1727753895');
+}
+
+.map.kozamauka {
+  background-image: url('kozamauka.jpg?1727753895');
+}
+
+.map.labyrinthos {
+  background-image: url('labyrinthos.jpg?1727753895');
+}
+
+.map.lakeland {
+  background-image: url('lakeland.jpg?1727753895');
+}
+
+.map.living-memory {
+  background-image: url('living-memory.jpg?1727753895');
+}
+
 .map.lower-la-noscea {
   background-image: url('lower-la-noscea.jpg?1727753895');
+}
+
+.map.mare-lamentorum {
+  background-image: url('mare-lamentorum.jpg?1727753895');
 }
 
 .map.middle-la-noscea {
@@ -69,6 +113,14 @@
   background-image: url('southern-thanalan.jpg?1727753895');
 }
 
+.map.shaaloani {
+  background-image: url('shaaloani.jpg?1727753895');
+}
+
+.map.thavnair {
+  background-image: url('thavnair.jpg?1727753895');
+}
+
 .map.the-azim-steppe {
   background-image: url('the-azim-steppe.jpg?1727753895');
 }
@@ -97,12 +149,28 @@
   background-image: url('the-peaks.jpg?1727753895');
 }
 
+.map.the-raktika-greatwood {
+  background-image: url('the-raktika-greatwood.jpg?1727753895');
+}
+
 .map.the-ruby-sea {
   background-image: url('the-ruby-sea.jpg?1727753895');
 }
 
 .map.the-sea-of-clouds {
   background-image: url('the-sea-of-clouds.jpg?1727753895');
+}
+
+.map.the-tempest {
+  background-image: url('the-tempest.jpg?1727753895');
+}
+
+.map.ultima-thule {
+  background-image: url('ultima-thule.jpg?1727753895');
+}
+
+.map.urqopacha {
+  background-image: url('urqopacha.jpg?1727753895');
 }
 
 .map.upper-la-noscea {
@@ -115,6 +183,10 @@
 
 .map.western-thanalan {
   background-image: url('western-thanalan.jpg?1727753895');
+}
+
+.map.yak-tel {
+  background-image: url('yak-tel.jpg?1727753895');
 }
 
 .map.yanxia {

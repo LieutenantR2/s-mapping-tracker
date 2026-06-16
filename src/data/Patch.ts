@@ -19,6 +19,24 @@ const PATCHES: PatchData[] = [
     aRanks: 2,
     bRanks: 2,
   },
+  {
+    patch: 5,
+    name: 'Shadowbringers',
+    aRanks: 2,
+    bRanks: 2,
+  },
+  {
+    patch: 6,
+    name: 'Endwalker',
+    aRanks: 2,
+    bRanks: 2,
+  },
+  {
+    patch: 7,
+    name: 'Dawntrail',
+    aRanks: 2,
+    bRanks: 2,
+  },
 ];
 
 export default PATCHES;
