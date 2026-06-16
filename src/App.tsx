@@ -408,7 +408,7 @@ const App = () => {
         [selectedRegion.id]: [],
       });
     }
-  }, [locationACounts, selectedRegion, counter]);
+  }, [locationACounts, selectedRegion, counter, spawnLog]);
 
   const handleACount = useCallback(
     (bRankName: string, pos: number) => {
